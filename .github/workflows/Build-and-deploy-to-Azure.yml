@@ -8,8 +8,8 @@ env:
   CLUSTER_NAME: 'aks-dylan-aue'
 
 on:
-  push:
-    branches: ['master']
+  push: 
+    branches: [ "master" ]
   workflow_dispatch:
 
 permissions:
@@ -29,20 +29,20 @@ jobs:
       - name: Azure Container Registry Login
         uses: Azure/docker-login@v1
         with:
-          # Container registry username
-          username: ${{ env.AZURE_CONTAINER_REGISTRY_NAME }}
-          # Container registry password
-          password: ${{ secrets.AZURE_CONTAINER_REGISTRY_PASSWORD }}
-          # Container registry server url
-          login-server: ${{ env.AZURE_CONTAINER_REGISTRY }}
+           # Container registry username
+           username: ${{ env.AZURE_CONTAINER_REGISTRY_NAME }}
+           # Container registry password
+           password: ${{ secrets.AZURE_CONTAINER_REGISTRY_PASSWORD }}
+           # Container registry server url
+           login-server: ${{ env.AZURE_CONTAINER_REGISTRY }}
 
       - name: Build and push Docker images
         uses: docker/build-push-action@v6.9.0
         with:
-          push: true
-          tags: ${{ env.AZURE_CONTAINER_REGISTRY }}/${{ env.CONTAINER_NAME }}:${{ github.sha }}
-          file: ./Dockerfile
-
+           push: true
+           tags: ${{ env.AZURE_CONTAINER_REGISTRY }}/${{ env.CONTAINER_NAME }}:${{ github.sha }}
+           file: ./Dockerfile
+          
   deployToAKS:
     runs-on: ubuntu-latest
 
@@ -54,7 +54,7 @@ jobs:
     environment: Production
 
     needs: [buildContainerImage]
-
+    
     steps:
       - name: Checkout
         uses: actions/checkout@v4.2.1
@@ -86,8 +86,10 @@ jobs:
           AZURE_CONTAINER_REGISTRY: ${{ env.AZURE_CONTAINER_REGISTRY }}
           CONTAINER_NAME: ${{ env.CONTAINER_NAME }}
         with:
-          input: kubernetes/hello-world-deployment.yaml
-          output: hello-world-deployment.yaml
+          input:
+            kubernetes/hello-world-deployment.yaml
+          output:
+            hello-world-deployment.yaml
 
       - name: Deploy to Kubernetes cluster
         uses: Azure/k8s-deploy@v4.9
